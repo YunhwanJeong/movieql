@@ -1,14 +1,10 @@
-import { people, getPerson, addPerson, deletePerson } from './db';
+import { getMovies } from './db';
 
 const resolvers = {
     Query: {
-        people: () => people,
-        person: (_, { id }) => getPerson(id),
+        movies: (_, { limit }) => getMovies(limit),
+        // movie: (_, { id }) => getMovie(id),
     },
-    Mutation: {
-        addPerson: (_, args) => addPerson(args),
-        deletePerson: (_, { id }) => deletePerson(id),
-    }
 };
 
 export default resolvers;
