@@ -1,12 +1,10 @@
 import axios from 'axios';
-
-let MOVIE_API_URL = 'https://yts-proxy.now.sh/';
+import { MOVIE_API_URL, MOVIES_DETAIL_NAMESPACE, MOVIE_DETAIL_NAMESPACE, MOVIE_SUGGESTIONS_NAMESPACE } from './constants';
 
 const getMovies = async (limit) => {
-    let MOVIES_DETAIL_NAMESPACE = `list_movies.json?sort_by=rating`;
-    MOVIE_API_URL += MOVIES_DETAIL_NAMESPACE;
+    let getMoviesURL = MOVIE_API_URL + MOVIES_DETAIL_NAMESPACE
     if (limit) {
-        MOVIE_API_URL += `&limit=${limit}`
+        getMoviesURL += `&limit=${limit}`;
     }
     const {
         data: {
@@ -14,7 +12,7 @@ const getMovies = async (limit) => {
                 movies
             }
         }
-    } = await axios.get(MOVIE_API_URL);
+    } = await axios.get(getMoviesURL);
     return movies.map((movie) => {
         return {
             id: movie.id,
@@ -23,16 +21,15 @@ const getMovies = async (limit) => {
             genres: movie.genres,
             rating: movie.rating,
             poster: movie.medium_cover_image,
-            summary: movie.summary,
+            description: movie.description_full,
         };
     });
 };
 
 const getMovie = async (id) => {
-    let MOVIE_DETAIL_NAMESPACE = `movie_details.json`;
-    MOVIE_API_URL += MOVIE_DETAIL_NAMESPACE;
+    let getMovieURL = MOVIE_API_URL + MOVIE_DETAIL_NAMESPACE;
     if (id) {
-        MOVIE_API_URL += `?movie_id=${id}`;
+        getMovieURL += `?movie_id=${id}`;
     }
     const {
         data: {
@@ -40,7 +37,7 @@ const getMovie = async (id) => {
                 movie
             }
         }
-    } = await axios.get(MOVIE_API_URL);
+    } = await axios.get(getMovieURL);
     return {
         id: movie.id,
         title: movie.title,
@@ -48,8 +45,33 @@ const getMovie = async (id) => {
         genres: movie.genres,
         rating: movie.rating,
         poster: movie.medium_cover_image,
-        summary: movie.summary,
+        description: movie.description_full,
     }
 };
 
-export { getMovies, getMovie };
+const getSuggestions = async (id) => {
+    let getSuggestionsURL = MOVIE_API_URL + MOVIE_SUGGESTIONS_NAMESPACE;
+    if (id) {
+        getSuggestionsURL += `?movie_id=${id}`;
+    }
+    const {
+        data: {
+            data: {
+                movies
+            }
+        }
+    } = await axios.get(getSuggestionsURL);
+    return movies.map((movie) => {
+        return {
+            id: movie.id,
+            title: movie.title,
+            year: movie.year,
+            genres: movie.genres,
+            rating: movie.rating,
+            poster: movie.medium_cover_image,
+            description: movie.description_full,
+        }
+    });
+};
+
+export { getMovies, getMovie, getSuggestions };
