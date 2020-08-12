@@ -1,5 +1,5 @@
 type Query {
-    movies(limit: Int!): [Movie]!
+    movies(limit: Int): [Movie]!
     movie(id: Int!): Movie!
     suggestions(id: Int!): [Movie]! 
 }
